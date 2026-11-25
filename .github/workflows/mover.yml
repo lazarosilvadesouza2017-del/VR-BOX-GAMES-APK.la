@@ -1,0 +1,24 @@
+name: Mover Release para Main
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  mover:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Baixar e extrair Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release download v0.2.0
+          unzip -o "*.zip"
+          rm -f *.zip
+      - name: Salvar na Main
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Extrair projeto da release v0.2.0"
+          git push
