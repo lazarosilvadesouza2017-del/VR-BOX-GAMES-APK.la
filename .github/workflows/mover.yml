@@ -1,33 +1,19 @@
-name: Mover Release para Main
-
+name: Ajustar SDK 33
 on:
   push:
     paths:
       - '.github/workflows/mover.yml'
-
 permissions:
   contents: write
-
 jobs:
-  mover:
+  ajustar:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Baixar e extrair Release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh release download v0.2.0
-          unzip -o "*.zip"
-          rm -f *.zip
-          rm -rf .github
-          git checkout HEAD -- .github
-      - name: Salvar na Main
-        run: |
+      - run: |
+          sed -i 's/AndroidTargetSdkVersion: 0/AndroidTargetSdkVersion: 33/g' ProjectSettings/ProjectSettings.asset
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add .
-          git commit -m "Extrair projeto da release v0.2.0"
+          git add ProjectSettings/ProjectSettings.asset
+          git commit -m "Definir Android SDK 33"
           git push
-
-
