@@ -1,8 +1,13 @@
 name: Mover Release para Main
+
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/mover.yml'
+
 permissions:
   contents: write
+
 jobs:
   mover:
     runs-on: ubuntu-latest
