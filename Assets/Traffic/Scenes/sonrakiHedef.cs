@@ -26,20 +26,21 @@ public class sonrakiHedef : MonoBehaviour
 
     void TrafikLambaYak()
     {
+        int i0 = 0, i1 = 1, i2 = 2;
         aktifAn++;
         if (!tersTaraf)
         {
-            trafikLambalari[0].SetActive(aktifAn < kirmiziIsikZamani + 2); //0-11
-            trafikLambalari[1].SetActive((aktifAn > kirmiziIsikZamani - 2 && aktifAn < kirmiziIsikZamani + 2) ||
-                  (aktifAn >= kirmiziIsikZamani + yesilIsikZamani + 2 && aktifAn <= kirmiziIsikZamani + 2 + yesilIsikZamani + 2)); //9-11 22-23
-            trafikLambalari[2].SetActive(aktifAn >= kirmiziIsikZamani + 2 && aktifAn < kirmiziIsikZamani + 2 + yesilIsikZamani); //12-21
+            trafikLambalari[i0].SetActive(aktifAn < kirmiziIsikZamani + 2);
+            trafikLambalari[i1].SetActive((aktifAn > kirmiziIsikZamani - 2 && aktifAn < kirmiziIsikZamani + 2) ||
+                  (aktifAn >= kirmiziIsikZamani + yesilIsikZamani + 2 && aktifAn <= kirmiziIsikZamani + 2 + yesilIsikZamani + 2));
+            trafikLambalari[i2].SetActive(aktifAn >= kirmiziIsikZamani + 2 && aktifAn < kirmiziIsikZamani + 2 + yesilIsikZamani);
         }
         else
         {
-            trafikLambalari[0].SetActive(aktifAn >= yesilIsikZamani + 2 && aktifAn < kirmiziIsikZamani + 2 + yesilIsikZamani + 2); //12-23
-            trafikLambalari[1].SetActive((aktifAn >= yesilIsikZamani && aktifAn < yesilIsikZamani + 2) ||
-                  (aktifAn > kirmiziIsikZamani + yesilIsikZamani + 2 && aktifAn <= kirmiziIsikZamani + 2 + yesilIsikZamani + 2)); //10-11 23-24
-            trafikLambalari[2].SetActive(aktifAn < yesilIsikZamani); //0-9
+            trafikLambalari[i0].SetActive(aktifAn >= yesilIsikZamani + 2 && aktifAn < kirmiziIsikZamani + 2 + yesilIsikZamani + 2);
+            trafikLambalari[i1].SetActive((aktifAn >= yesilIsikZamani && aktifAn < yesilIsikZamani + 2) ||
+                  (aktifAn > kirmiziIsikZamani + yesilIsikZamani + 2 && aktifAn <= kirmiziIsikZamani + 2 + yesilIsikZamani + 2));
+            trafikLambalari[i2].SetActive(aktifAn < yesilIsikZamani);
         }
 
         if (aktifAn >= kirmiziIsikZamani + 2 + yesilIsikZamani + 2)
@@ -57,7 +58,7 @@ public class sonrakiHedef : MonoBehaviour
                 Vector3 start = transform.position;
                 Vector3 end = go.transform.position;
                 Vector3 dir = (end - start).normalized;
-                float length = 2; //(end - start).magnitude;
+                float length = 2;
                 Gizmos.DrawLine(start, end);
                 Vector3 left = Quaternion.AngleAxis(45, Vector3.up) * (-dir);
                 Gizmos.DrawLine(end, end + 0.5f * length * left);
