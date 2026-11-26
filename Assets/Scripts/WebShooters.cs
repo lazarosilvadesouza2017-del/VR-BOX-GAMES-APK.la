@@ -10,7 +10,7 @@ public class WebShooters : MonoBehaviour
     public FirstPerson cam;
     public Transform wrist, camera, player;
     public bool paused;
-    private float maxDistance = 50f;
+    private float maxDistance = 90f;
     private SpringJoint joint;
     public SpiderVR.GestureRecognizer gestures; // disparo por gesto (VR); mouse continua funcionando
 

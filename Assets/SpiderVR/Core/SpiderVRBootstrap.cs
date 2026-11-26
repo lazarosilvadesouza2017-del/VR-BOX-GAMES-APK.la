@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,17 +10,44 @@ namespace SpiderVR
     /// </summary>
     public static class SpiderVRBootstrap
     {
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        // AfterSceneLoad so dispara na 1a cena: por isso escuta TODA troca de cena (Menu -> Main Game)
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void Hook()
+        {
+            SceneManager.sceneLoaded -= OnLoaded; SceneManager.sceneLoaded += OnLoaded;
+        }
+        static void OnLoaded(Scene s, LoadSceneMode m) { if (m == LoadSceneMode.Single) Run(); }
+
         static void Run()
         {
             var pm = Object.FindObjectOfType<PlayerMovement>();
             if (pm == null)
             {
                 if (SceneManager.GetActiveScene().name.Contains("Menu") && Object.FindObjectOfType<MainMenuVR>() == null)
+                {
+                    foreach (var c in Object.FindObjectsOfType<Canvas>()) c.gameObject.SetActive(false);   // menu antigo do Swinging Simulator: so fica UM menu
                     new GameObject("MenuVR").AddComponent<MainMenuVR>();
+                }
                 return;
             }
-            new GameObject("SpiderVR_Core").AddComponent<PerformanceManager>();
+            if (Object.FindObjectOfType<Runner>() != null) return;
+            new GameObject("SpiderVR_Core").AddComponent<Runner>().pm = pm;
+        }
+
+        public class Runner : MonoBehaviour
+        {
+            public PlayerMovement pm;
+            IEnumerator Start()
+            {
+                var rb = pm.GetComponent<Rigidbody>(); if (rb) rb.isKinematic = true;   // segura o jogador ate a cidade carregar
+                yield return CityComposer.Compose(pm);
+                if (rb) rb.isKinematic = false;
+                Setup(pm);
+            }
+
+            void Setup(PlayerMovement pm)
+            {
+            gameObject.AddComponent<PerformanceManager>();
             var cam = Camera.main; var fp = cam ? cam.GetComponent<FirstPerson>() : null;
             if (fp) { fp.enabled = false; Cursor.lockState = CursorLockMode.None; }
             var rig = cam.gameObject.AddComponent<StereoRig>(); rig.head = fp ? fp.camHolder : cam.transform;
@@ -41,5 +69,6 @@ namespace SpiderVR
             var sel = new GameObject("SuitSelect").AddComponent<SuitSelectUI>(); sel.pm = pm;
             var city = pm.gameObject.AddComponent<CityOptimizer>(); city.player = pm.transform; city.skylinePng = Resources.Load<Texture2D>("Skyline"); city.renderDistance = GameSettings.TargetFps == 30 ? 140f : 220f;
         }
+    }
     }
 }

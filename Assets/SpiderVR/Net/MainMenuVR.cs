@@ -8,13 +8,14 @@ namespace SpiderVR
     /// <summary>Menu em OnGUI (sem prefab/cena a montar): Solo, Local, Servidores, Criar Sala, Entrar em Privado, Historia, Opcoes.</summary>
     public class MainMenuVR : MonoBehaviour
     {
-        public string gameScene = "SpiderVR_Game";
+        public string gameScene = "Main Game";
         enum Page { Main, Local, List, Create, JoinPrivate, Options, Story }
         Page page; string roomName = "Minha sala", code = ""; bool pub = true, busy; string msg = "";
         OnlineSession online; LocalSession local; LanDiscovery lan; List<Unity.Services.Lobbies.Models.Lobby> rooms = new List<Unity.Services.Lobbies.Models.Lobby>();
 
         void Awake()
         {
+            NetRuntime.Ensure();
             online = gameObject.AddComponent<OnlineSession>(); lan = gameObject.AddComponent<LanDiscovery>();
             local = gameObject.AddComponent<LocalSession>(); local.discovery = lan;
         }

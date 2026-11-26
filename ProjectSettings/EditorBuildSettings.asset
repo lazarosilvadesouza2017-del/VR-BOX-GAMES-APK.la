@@ -8,10 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Menu.unity
     guid: 63d58c9794a6d0f4eaf27c9d6ff2d6be
-  - enabled: 0
-    path: 
-    guid: 00000000000000000000000000000000
   - enabled: 1
     path: Assets/Scenes/Main Game.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Traffic/Scenes/trafikVeYayalar.unity
+    guid: 45d044b23d8343059ebfcafd7c36c7f7
   m_configObjects: {}

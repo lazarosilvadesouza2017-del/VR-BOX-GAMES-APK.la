@@ -29,6 +29,7 @@ namespace SpiderVR
             var p = h.collider.GetComponentInParent<WebPullable>(); if (p) { p.Release(); target = p.GetComponent<Rigidbody>(); }
             else target = h.rigidbody;
             targetPlayer = h.collider.GetComponentInParent<PlayerNet>();
+            var cz = h.collider.GetComponentInParent<Citizen>(); if (cz != null) cz.Webbed();   // salvou quem estava caindo
             if (target || targetPlayer) { lr.positionCount = 2; armed = GameSettings.Web == WebMode.Auto; if (!armed && gestures) gestures.Yank += Pulled; }
         }
         void Pulled(Side s) { armed = true; if (gestures) gestures.Yank -= Pulled; }

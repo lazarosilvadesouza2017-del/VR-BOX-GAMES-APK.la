@@ -14,11 +14,23 @@ namespace SpiderVR
     {
         public float hp = 60, speed = 3.5f, sight = 35f, dmg = 8f; Transform target; Rigidbody rb; float atk;
         void Start() { rb = GetComponent<Rigidbody>(); var p = FindObjectOfType<PlayerMovement>(); if (p) target = p.transform; }
+        Citizen victim; float scan;
         void FixedUpdate()
         {
-            if (!target || hp <= 0) return;
-            Vector3 d = target.position - transform.position; d.y = 0; float m = d.magnitude;
-            if (m > sight || m < 1.3f) { if (m < 1.8f && Time.time > atk) { atk = Time.time + 1.2f; target.GetComponent<IDamageable>()?.Hit(dmg, d.normalized); } return; }
+            if (hp <= 0) return;
+            if (Time.time > scan)   // escolhe a vitima: cidadao mais proximo (ate 30 m); senao o jogador
+            {
+                scan = Time.time + 0.5f; victim = null; float best = 30f * 30f;
+                foreach (var c in Citizen.All) { if (c == null || c.dead || c.fallingNow) continue; float dd = (c.transform.position - transform.position).sqrMagnitude; if (dd < best) { best = dd; victim = c; } }
+            }
+            Transform tgt = victim ? victim.transform : target; if (!tgt) return;
+            Vector3 d = tgt.position - transform.position; d.y = 0; float m = d.magnitude;
+            if (!victim && m > sight) return;
+            if (m < 1.8f)
+            {
+                if (Time.time > atk) { atk = Time.time + 1.2f; IDamageable v = victim ? (IDamageable)victim : target.GetComponent<IDamageable>(); if (v != null) v.Hit(dmg, d.normalized); }
+                return;
+            }
             rb.MovePosition(rb.position + d.normalized * speed * Time.fixedDeltaTime); transform.rotation = Quaternion.LookRotation(d.normalized);
         }
         public void Hit(float d, Vector3 dir)
@@ -43,6 +55,7 @@ namespace SpiderVR
                 if ((p.transform.position - player.position).sqrMagnitude > radius * radius * 4) continue;
                 p.enabled = false; MakeBandit(p.gameObject); n++;
             }
+            foreach (var p in FindObjectsOfType<yayaHareket>()) if (p.GetComponent<Bandit>() == null && p.GetComponent<Citizen>() == null) p.gameObject.AddComponent<Citizen>();
             for (; n < count; n++) { var g = Capsule(RandomGround()); if (g != null) MakeBandit(g); }
             for (int i = 0; i < bunkers; i++) Bunker(RandomGround());
         }

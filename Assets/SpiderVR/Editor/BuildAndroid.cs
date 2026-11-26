@@ -12,6 +12,7 @@ namespace SpiderVR.Editor
             PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
             PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARM64 | AndroidArchitecture.ARMv7;
             PlayerSettings.Android.minSdkVersion = AndroidSdkVersions.AndroidApiLevel24;
+            PlayerSettings.Android.targetSdkVersion = AndroidSdkVersions.AndroidApiLevel33;
             PlayerSettings.defaultInterfaceOrientation = UIOrientation.LandscapeLeft;
             PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, "com.spidervr.game");
             PlayerSettings.productName = "SpiderVR";
@@ -37,9 +38,8 @@ namespace SpiderVR.Editor
         public static void Build()
         {
             Configure();
-            NetSetup.Run();
-            SceneBuilder.Build();
-            var opts = new BuildPlayerOptions { scenes = new[] { "Assets/Scenes/Menu.unity", "Assets/Scenes/SpiderVR_Game.unity" }, locationPathName = "build/Android/SpiderVR.apk", target = BuildTarget.Android, options = BuildOptions.None };
+            NetSetup.CreatePrefab();
+            var opts = new BuildPlayerOptions { scenes = new[] { "Assets/Scenes/Menu.unity", "Assets/Scenes/Main Game.unity", "Assets/Traffic/Scenes/trafikVeYayalar.unity" }, locationPathName = "build/Android/SpiderVR.apk", target = BuildTarget.Android, options = BuildOptions.None };
             var r = BuildPipeline.BuildPlayer(opts);
             if (r.summary.result != UnityEditor.Build.Reporting.BuildResult.Succeeded) EditorApplication.Exit(1);
         }
