@@ -20,6 +20,7 @@ jobs:
           gh release download v0.2.0
           unzip -o "*.zip"
           rm -f *.zip
+          rm -rf .github
           git checkout HEAD -- .github
       - name: Salvar na Main
         run: |
@@ -28,4 +29,5 @@ jobs:
           git add .
           git commit -m "Extrair projeto da release v0.2.0"
           git push
+
 
